@@ -5,7 +5,9 @@ const statusEl = document.getElementById("status");
 const resultEl = document.getElementById("result");
 const video = document.getElementById("video");
 const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
+const ctx = canvas.getContext("2d", { willReadFrequently: true });
+
+let copyTimer = null;
 
 console.log("startBtn:", startBtn);
 console.log("statusEl:", statusEl);
@@ -31,9 +33,9 @@ if (!startBtn) {
       await video.play();
 
       statusEl.textContent = "카메라 실행 성공";
-      resultEl.textContent = "Canvas 복사 테스트 중입니다.";
+      resultEl.textContent = "ImageData 확인 중입니다.";
 
-      startCanvasCopy();
+      startImageDataTest();
     } catch (error) {
       console.error("카메라 실행 실패:", error);
       statusEl.textContent = "카메라 실행 실패: " + error.message;
@@ -41,13 +43,32 @@ if (!startBtn) {
   });
 }
 
-function startCanvasCopy() {
-  setInterval(() => {
+function startImageDataTest() {
+  if (copyTimer) return;
+
+  copyTimer = setInterval(() => {
     if (video.readyState < 2) return;
 
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
 
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    const imageData = ctx.getImageData(
+      0,
+      0,
+      canvas.width,
+      canvas.height
+    );
+
+    console.log(
+      "ImageData:",
+      imageData.width,
+      imageData.height,
+      imageData.data.length
+    );
+
+    resultEl.textContent =
+      `ImageData 성공: ${imageData.width} x ${imageData.height}`;
   }, 1000);
 }
