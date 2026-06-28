@@ -1,5 +1,5 @@
-console.log("V4-BARCODE-SCAN-001 로드됨");
-
+console.log("FORCE-TEST-999 로드됨");
+document.getElementById("status").textContent = "JS 로드 성공: FORCE-TEST-999";
 const startBtn = document.getElementById("startBtn");
 const statusEl = document.getElementById("status");
 const resultEl = document.getElementById("result");
