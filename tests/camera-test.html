@@ -13,11 +13,49 @@
     <button id="startBtn">카메라 시작</button>
 
     <video id="camera" autoplay playsinline muted></video>
-    <canvas id="canvas" style="display:none;"></canvas>
 
     <div id="result">카메라 시작 버튼을 눌러주세요.</div>
   </div>
 
-  <script type="module" src="./js/camera-test.js"></script>
+  <script>
+    const video = document.querySelector("#camera");
+    const resultBox = document.querySelector("#result");
+    const startBtn = document.querySelector("#startBtn");
+
+    function log(msg) {
+      console.log(msg);
+      resultBox.textContent = msg;
+      alert(msg);
+    }
+
+    startBtn.onclick = async function () {
+      log("버튼 클릭됨!");
+
+      try {
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+          log("카메라 API 없음. HTTPS 주소에서 접속해야 합니다.");
+          return;
+        }
+
+        log("카메라 권한 요청 중...");
+
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            facingMode: "environment"
+          },
+          audio: false
+        });
+
+        video.srcObject = stream;
+        await video.play();
+
+        log("카메라 실행 성공!");
+
+      } catch (err) {
+        console.error(err);
+        log("카메라 실행 실패: " + err.message);
+      }
+    };
+  </script>
 </body>
 </html>
