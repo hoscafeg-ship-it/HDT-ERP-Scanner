@@ -1,25 +1,44 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ScanGo Builder</title>
-  <script type="module" crossorigin src="/HDT-ERP-Scanner/assets/main-Bfisse8V.js"></script>
-  <link rel="stylesheet" crossorigin href="/HDT-ERP-Scanner/assets/main-CGe1OOmJ.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ScanGo Builder</title>
+
+    <!-- CSS -->
+  <script type="module" crossorigin src="/HDT-ERP-Scanner/assets/main-DPAO8wee.js"></script>
+  <link rel="stylesheet" crossorigin href="/HDT-ERP-Scanner/assets/main-aa1n5sV1.css">
 </head>
+
 <body>
-  <main class="app">
-    <h1>ScanGo Builder</h1>
-    <p>카페24 엑셀을 넣으면 품목별 주문번호 바코드를 생성합니다.</p>
+
+    <header>
+        <h1>ScanGo Builder</h1>
+        <p>카페24 엑셀 업로드 → 품목별 주문번호 Code128 생성</p>
+    </header>
 
     <section class="upload-box">
-      <input id="excelInput" type="file" accept=".xlsx,.xls" />
-      <p id="summary">엑셀 파일을 선택해주세요.</p>
-      <button id="printBtn" type="button">출력하기</button>
+
+        <input
+            id="excelFile"
+            type="file"
+            accept=".xlsx,.xls"
+        >
+
+        <button id="printBtn">
+            출력하기
+        </button>
+
+        <span id="countText">
+            총 0개
+        </span>
+
     </section>
 
-    <section id="orderList" class="order-list"></section>
-  </main>
-
+    <main id="printArea"></main>
+
+    <!-- JS -->
+
 </body>
 </html>
