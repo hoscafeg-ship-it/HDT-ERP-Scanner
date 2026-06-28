@@ -1,74 +1,50 @@
 <!DOCTYPE html>
 <html lang="ko">
-
 <head>
-
-<meta charset="UTF-8">
-
-<meta name="viewport"
-content="width=device-width,initial-scale=1">
-
-<title>Camera Test</title>
-
-<link rel="stylesheet" href="css/camera-test.css">
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>ScanGo Camera Test</title>
+  <link rel="stylesheet" href="./css/camera-test.css" />
 </head>
 
 <body>
+  <div class="app">
+    <header class="header">
+      <h1>📷 ScanGo Camera Test</h1>
+      <p>Camera Engine Test / V4 Quick</p>
+    </header>
 
-<div class="container">
+    <main class="camera-card">
+      <video id="cameraVideo" autoplay playsinline muted></video>
 
-<h1>📷 Camera Test</h1>
+      <div class="scan-guide">
+        <div class="scan-line"></div>
+      </div>
+    </main>
 
-<div class="video-wrapper">
+    <section class="panel">
+      <div class="row">
+        <span>상태</span>
+        <strong id="statusText">대기중</strong>
+      </div>
 
-<video
-id="camera"
-autoplay
-playsinline
-muted>
-</video>
+      <div class="row">
+        <span>해상도</span>
+        <strong id="resolutionText">-</strong>
+      </div>
 
-<div class="scan-box"></div>
+      <div class="row">
+        <span>카메라</span>
+        <strong id="cameraText">-</strong>
+      </div>
+    </section>
 
-</div>
+    <div class="buttons">
+      <button id="startBtn">카메라 시작</button>
+      <button id="stopBtn">종료</button>
+    </div>
+  </div>
 
-<div class="status">
-
-<div>
-
-Status :
-<span id="status">
-
-Ready
-
-</span>
-
-</div>
-
-</div>
-
-<div class="buttons">
-
-<button id="startBtn">
-
-카메라 시작
-
-</button>
-
-<button id="stopBtn">
-
-카메라 종료
-
-</button>
-
-</div>
-
-</div>
-
-<script type="module"
-src="js/camera-test.js"></script>
-
+  <script type="module" src="./js/camera-test.js"></script>
 </body>
-
 </html>
