@@ -22,6 +22,7 @@
     <button id="printBtn" type="button">출력하기</button>
     <button id="startScanBtn" type="button">📷 스캔 시작</button>
     <button id="stopScanBtn" type="button">스캔 중지</button>
+    <button id="finishScanBtn" type="button">🏁 오늘 작업 종료</button>
 
     <span id="countText">총 0개</span>
   </section>
@@ -33,30 +34,29 @@
   </section>
 
   <main id="printArea"></main>
-
 
   <div id="confirmModal" class="modal hidden">
-  <div class="modal-card">
-    <div class="modal-title">📦 출고 확인</div>
+    <div class="modal-card">
+      <div class="modal-title">📦 출고 확인</div>
 
-    <div class="modal-number" id="modalNumber">#0</div>
+      <div class="modal-number" id="modalNumber">#0</div>
 
-    <div class="modal-product" id="modalProduct">상품명</div>
+      <div class="modal-product" id="modalProduct">상품명</div>
 
-    <div class="modal-info">
-      <div id="modalReceiver">👤 수령인</div>
-      <div id="modalQty">📦 수량</div>
-      <div id="modalBarcode">바코드</div>
-    </div>
+      <div class="modal-info">
+        <div id="modalReceiver">👤 수령인</div>
+        <div id="modalQty">📦 수량</div>
+        <div id="modalBarcode">바코드</div>
+      </div>
 
-    <div class="modal-actions">
-      <button id="modalCancelBtn" type="button">취소</button>
-      <button id="modalConfirmBtn" type="button">출고완료</button>
-        <button id="finishScanBtn" type="button">✅ 스캔 완료</button>
+      <div class="modal-actions">
+        <button id="modalCancelBtn" type="button">취소</button>
+        <button id="modalConfirmBtn" type="button">출고완료</button>
+      </div>
     </div>
   </div>
-</div>
 
-<div id="toast" class="toast hidden">✅ 저장되었습니다</div>
+  <div id="toast" class="toast hidden">✅ 저장되었습니다</div>
+
 </body>
 </html>
