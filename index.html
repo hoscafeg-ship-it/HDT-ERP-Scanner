@@ -7,12 +7,14 @@
     <title>ScanGo Builder</title>
 
     <!-- CSS -->
-  <script type="module" crossorigin src="/HDT-ERP-Scanner/assets/main-aavbnV0b.js"></script>
-  <link rel="stylesheet" crossorigin href="/HDT-ERP-Scanner/assets/main-LOVY4E07.css">
+  <script type="module" crossorigin src="/HDT-ERP-Scanner/assets/main-4USmuwgL.js"></script>
+  <link rel="stylesheet" crossorigin href="/HDT-ERP-Scanner/assets/main-hkGDstQu.css">
 </head>
 <button id="scanBtn">
 📷 스캔 시작
 </button>
+<button id="startScanBtn" type="button">📷 스캔 시작</button>
+<button id="stopScanBtn" type="button">스캐 중지</button>
 <body>
 
     <header>
@@ -37,7 +39,11 @@
         </span>
 
     </section>
-
+    <section id="scannerBox" class="scanner-box">
+  <video id="scannerVideo" autoplay playsinline></video>
+  <canvas id="scannerCanvas" style="display:none;"></canvas>
+  <div id="scanStatus">카메라 대기중</div>
+</section>
     <main id="printArea"></main>
 
     <!-- JS -->
