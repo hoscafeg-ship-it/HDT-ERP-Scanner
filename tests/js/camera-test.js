@@ -1,5 +1,5 @@
-console.log("FORCE-TEST-999 로드됨");
-document.getElementById("status").textContent = "JS 로드 성공: FORCE-TEST-999";
+console.log("V4-ROI-SCAN-001 로드됨");
+
 const startBtn = document.getElementById("startBtn");
 const statusEl = document.getElementById("status");
 const resultEl = document.getElementById("result");
@@ -7,7 +7,7 @@ const video = document.getElementById("video");
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d", { willReadFrequently: true });
 
-statusEl.textContent = "JS 로드 성공: V4-BARCODE-SCAN-001";
+statusEl.textContent = "JS 로드 성공: V4-ROI-SCAN-001";
 resultEl.textContent = "카메라 시작 버튼을 눌러주세요.";
 
 let scanImageData = null;
@@ -37,12 +37,6 @@ startBtn.addEventListener("click", async () => {
     const zbar = await import("@undecaf/zbar-wasm");
     scanImageData = zbar.scanImageData;
 
-    if (!scanImageData) {
-      statusEl.textContent = "scanImageData 없음";
-      resultEl.textContent = "zbar 로딩은 됐지만 scanImageData를 찾지 못했습니다.";
-      return;
-    }
-
     statusEl.textContent = "스캔 준비 완료";
     resultEl.textContent = "바코드를 초록색 박스 안에 비춰주세요.";
 
@@ -63,17 +57,29 @@ function startScanLoop() {
       if (!scanImageData) return;
       if (video.readyState < 2) return;
 
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
+      const vw = video.videoWidth;
+      const vh = video.videoHeight;
 
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      // 초록 박스 영역: 화면 중앙 가로 70%, 세로 30%
+      const sx = Math.floor(vw * 0.15);
+      const sy = Math.floor(vh * 0.35);
+      const sw = Math.floor(vw * 0.70);
+      const sh = Math.floor(vh * 0.30);
 
-      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      canvas.width = sw;
+      canvas.height = sh;
+
+      ctx.drawImage(
+        video,
+        sx, sy, sw, sh,
+        0, 0, sw, sh
+      );
+
+      const imageData = ctx.getImageData(0, 0, sw, sh);
       const symbols = await scanImageData(imageData);
 
       if (symbols && symbols.length > 0) {
-        const symbol = symbols[0];
-        const value = symbol.decode();
+        const value = symbols[0].decode();
 
         if (value && value !== lastValue) {
           lastValue = value;
@@ -89,5 +95,5 @@ function startScanLoop() {
       statusEl.textContent = "스캔 오류";
       resultEl.textContent = error.message;
     }
-  }, 500);
+  }, 400);
 }
