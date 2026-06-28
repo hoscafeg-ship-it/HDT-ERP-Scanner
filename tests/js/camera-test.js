@@ -8,17 +8,12 @@ const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d", { willReadFrequently: true });
 
 let copyTimer = null;
-
-console.log("startBtn:", startBtn);
-console.log("statusEl:", statusEl);
-console.log("video:", video);
+let count = 0;
 
 if (!startBtn) {
   console.error("startBtn을 찾지 못함. HTML id 확인 필요");
 } else {
   startBtn.addEventListener("click", async () => {
-    console.log("카메라 시작 버튼 클릭됨");
-
     try {
       statusEl.textContent = "카메라 권한 요청 중...";
 
@@ -33,7 +28,7 @@ if (!startBtn) {
       await video.play();
 
       statusEl.textContent = "카메라 실행 성공";
-      resultEl.textContent = "ImageData 확인 중입니다.";
+      resultEl.textContent = "ImageData 테스트 시작됨";
 
       startImageDataTest();
     } catch (error) {
@@ -47,28 +42,28 @@ function startImageDataTest() {
   if (copyTimer) return;
 
   copyTimer = setInterval(() => {
-    if (video.readyState < 2) return;
+    try {
+      count++;
 
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
+      if (video.readyState < 2) {
+        resultEl.textContent = `대기 중... video.readyState: ${video.readyState}`;
+        return;
+      }
 
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
 
-    const imageData = ctx.getImageData(
-      0,
-      0,
-      canvas.width,
-      canvas.height
-    );
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-    console.log(
-      "ImageData:",
-      imageData.width,
-      imageData.height,
-      imageData.data.length
-    );
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
-    resultEl.textContent =
-      `ImageData 성공: ${imageData.width} x ${imageData.height}`;
+      statusEl.textContent = "ImageData 확인 성공";
+      resultEl.textContent =
+        `ImageData 성공 ${count}회: ${imageData.width} x ${imageData.height} / data: ${imageData.data.length}`;
+    } catch (error) {
+      console.error("ImageData 오류:", error);
+      statusEl.textContent = "ImageData 오류 발생";
+      resultEl.textContent = error.message;
+    }
   }, 1000);
 }
