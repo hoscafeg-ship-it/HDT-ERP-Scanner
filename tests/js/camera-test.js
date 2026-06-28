@@ -4,6 +4,8 @@ const startBtn = document.getElementById("startBtn");
 const statusEl = document.getElementById("status");
 const resultEl = document.getElementById("result");
 const video = document.getElementById("video");
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
 
 console.log("startBtn:", startBtn);
 console.log("statusEl:", statusEl);
@@ -29,10 +31,23 @@ if (!startBtn) {
       await video.play();
 
       statusEl.textContent = "카메라 실행 성공";
-      resultEl.textContent = "이제 버튼 연결은 정상입니다.";
+      resultEl.textContent = "Canvas 복사 테스트 중입니다.";
+
+      startCanvasCopy();
     } catch (error) {
       console.error("카메라 실행 실패:", error);
       statusEl.textContent = "카메라 실행 실패: " + error.message;
     }
   });
+}
+
+function startCanvasCopy() {
+  setInterval(() => {
+    if (video.readyState < 2) return;
+
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+  }, 1000);
 }
