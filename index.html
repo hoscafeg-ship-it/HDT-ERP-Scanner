@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ScanGo Builder</title>
-  <script type="module" crossorigin src="/HDT-ERP-Scanner/assets/main-6sceHuCk.js"></script>
-  <link rel="stylesheet" crossorigin href="/HDT-ERP-Scanner/assets/main-Dy9A4TzC.css">
+  <script type="module" crossorigin src="/HDT-ERP-Scanner/assets/main-dbC7KDIa.js"></script>
+  <link rel="stylesheet" crossorigin href="/HDT-ERP-Scanner/assets/main-B03WNTSJ.css">
 </head>
 
 <body>
@@ -34,5 +34,28 @@
 
   <main id="printArea"></main>
 
+
+  <div id="confirmModal" class="modal hidden">
+  <div class="modal-card">
+    <div class="modal-title">📦 출고 확인</div>
+
+    <div class="modal-number" id="modalNumber">#0</div>
+
+    <div class="modal-product" id="modalProduct">상품명</div>
+
+    <div class="modal-info">
+      <div id="modalReceiver">👤 수령인</div>
+      <div id="modalQty">📦 수량</div>
+      <div id="modalBarcode">바코드</div>
+    </div>
+
+    <div class="modal-actions">
+      <button id="modalCancelBtn" type="button">취소</button>
+      <button id="modalConfirmBtn" type="button">출고완료</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast hidden">✅ 저장되었습니다</div>
 </body>
 </html>
