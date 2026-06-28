@@ -7,7 +7,6 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: resolve(__dirname, "index.html"),
-        cameraTest: resolve(__dirname, "tests/camera-test.html"),
       },
     },
   },

@@ -1,101 +1,28 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
-
 <head>
-
-    <meta charset="UTF-8">
-
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-
-    <title>HDT ERP Scanner</title>
-
-    <link rel="manifest" href="/HDT-ERP-Scanner/assets/favicon-B_SY1GJM.ico">
-
-    <meta name="theme-color" content="#111827">
-
-    <link rel="icon" href="/HDT-ERP-Scanner/assets/favicon-B_SY1GJM.ico">
-
-
-
-  <link rel="stylesheet" crossorigin href="/HDT-ERP-Scanner/assets/main-Cier0rXG.css">
-  <script type="module" crossorigin src="/HDT-ERP-Scanner/assets/main-C1WLf2qv.js"></script>
-  <link rel="modulepreload" crossorigin href="/HDT-ERP-Scanner/assets/modulepreload-polyfill-B-eOYwHK.js">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>스캔고 V4 Quick</title>
+  <link rel="stylesheet" href="./css/camera-test.css" />
 </head>
-
 <body>
+  <main class="app">
+    <h1>스캔고 V4 Quick</h1>
 
-<div class="container">
+    <button id="startBtn" type="button">카메라 시작</button>
 
-    <!-- 상단 -->
-    <header class="header">
+    <p id="status">대기 중</p>
+    <p id="result">스캔 결과: 없음</p>
 
-        <h1>🚀 HDT ERP Scanner</h1>
+    <div class="camera-box">
+      <video id="video" playsinline muted></video>
+      <div class="scan-box"></div>
+    </div>
 
-        <p class="version">
-            Version 4.0.0-alpha
-        </p>
+    <canvas id="canvas"></canvas>
+  </main>
 
-    </header>
-
-    <!-- 카메라 -->
-    <main class="camera-area">
-
-        <div id="reader">
-
-            <div class="camera-placeholder">
-
-                <div class="scan-box"></div>
-
-                <p>카메라 준비중...</p>
-
-            </div>
-
-        </div>
-
-    </main>
-
-    <!-- 상태 -->
-    <section class="status">
-
-        <h3>상태</h3>
-
-        <div id="statusText">
-
-            대기중...
-
-        </div>
-
-    </section>
-
-    <!-- 최근 스캔 -->
-    <section class="history">
-
-        <h3>최근 스캔</h3>
-
-        <ul id="historyList">
-
-            <li>아직 스캔 없음</li>
-
-        </ul>
-
-    </section>
-
-    <!-- 버튼 -->
-    <footer class="footer">
-
-        <button id="startBtn">
-
-            📷 스캔 시작
-
-        </button>
-
-    </footer>
-
-</div>
-
-
+  <script type="module" src="./src/main.js"></script>
 </body>
-
 </html>
