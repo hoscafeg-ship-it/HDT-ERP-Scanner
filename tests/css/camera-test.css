@@ -1,51 +1,72 @@
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
+* {
+  box-sizing: border-box;
 }
 
-body{
-    background:#111;
-    color:white;
-    font-family:Arial, Helvetica, sans-serif;
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #111827;
+  color: white;
 }
 
-.container{
-    width:100%;
-    max-width:600px;
-    margin:auto;
-    padding:20px;
-    text-align:center;
+.app {
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 20px;
+  text-align: center;
 }
 
-h1{
-    margin-bottom:20px;
+h1 {
+  font-size: 24px;
+  margin-bottom: 16px;
 }
 
-#camera{
-    width:100%;
-    border-radius:12px;
-    background:black;
+button {
+  width: 100%;
+  padding: 14px;
+  font-size: 18px;
+  font-weight: 700;
+  border: 0;
+  border-radius: 12px;
+  background: #22c55e;
+  color: #052e16;
 }
 
-#result{
-    margin-top:20px;
-    padding:15px;
-    font-size:22px;
-    font-weight:bold;
-    background:#222;
-    border-radius:10px;
-    word-break:break-all;
+button:disabled {
+  opacity: 0.6;
 }
 
-#startBtn{
-  width:100%;
-  padding:16px;
-  margin-bottom:16px;
-  border:0;
-  border-radius:12px;
-  background:#fff;
-  color:#111;
-  font-size:20px;
-  font-weight:bold;
+#status,
+#result {
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.camera-box {
+  position: relative;
+  width: 100%;
+  margin-top: 16px;
+  overflow: hidden;
+  border-radius: 16px;
+  background: black;
+}
+
+video {
+  width: 100%;
+  display: block;
+}
+
+.scan-box {
+  position: absolute;
+  left: 15%;
+  top: 35%;
+  width: 70%;
+  height: 30%;
+  border: 3px solid #22c55e;
+  border-radius: 14px;
+  box-shadow: 0 0 0 999px rgba(0, 0, 0, 0.35);
+}
+
+canvas {
+  display: none;
 }

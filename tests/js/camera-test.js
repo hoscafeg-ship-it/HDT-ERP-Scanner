@@ -1,35 +1,77 @@
-const video = document.querySelector("#camera");
-const resultBox = document.querySelector("#result");
-const startBtn = document.querySelector("#startBtn");
+import { scanImageData, setModuleArgs } from "@undecaf/zbar-wasm";
 
-function log(msg) {
-  console.log(msg);
-  resultBox.textContent = msg;
-}
+const startBtn = document.getElementById("startBtn");
+const statusEl = document.getElementById("status");
+const resultEl = document.getElementById("result");
+const video = document.getElementById("video");
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d", { willReadFrequently: true });
+
+let stream = null;
+let scanning = false;
+let lastValue = "";
+
+// zbar.wasm 위치 설정
+setModuleArgs({
+  locateFile: (filename) => `/HDT-ERP-Scanner/${filename}`,
+});
 
 startBtn.addEventListener("click", async () => {
-  log("버튼 클릭됨! 카메라 권한 요청 중...");
-
   try {
-    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-      log("카메라 API 없음. HTTPS 주소에서 접속해야 합니다.");
-      return;
-    }
+    statusEl.textContent = "카메라 권한 요청 중...";
+    startBtn.disabled = true;
 
-    const stream = await navigator.mediaDevices.getUserMedia({
+    stream = await navigator.mediaDevices.getUserMedia({
       video: {
-        facingMode: "environment"
+        facingMode: { ideal: "environment" },
+        width: { ideal: 1280 },
+        height: { ideal: 720 },
       },
-      audio: false
+      audio: false,
     });
 
     video.srcObject = stream;
     await video.play();
 
-    log("카메라 실행 성공!");
+    statusEl.textContent = "카메라 실행 성공. 바코드를 비춰주세요.";
+    scanning = true;
 
-  } catch (err) {
-    console.error(err);
-    log("카메라 실행 실패: " + err.message);
+    requestAnimationFrame(scanLoop);
+  } catch (error) {
+    console.error(error);
+    statusEl.textContent = "카메라 실행 실패";
+    startBtn.disabled = false;
   }
 });
+
+async function scanLoop() {
+  if (!scanning) return;
+
+  try {
+    if (video.readyState >= 2) {
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const symbols = await scanImageData(imageData);
+
+      if (symbols && symbols.length > 0) {
+        const value = symbols[0].decode();
+
+        if (value && value !== lastValue) {
+          lastValue = value;
+          resultEl.textContent = `스캔 성공: ${value}`;
+          statusEl.textContent = "바코드 인식 완료";
+          console.log("스캔 성공:", value);
+        }
+      }
+    }
+  } catch (error) {
+    console.error("스캔 오류:", error);
+    statusEl.textContent = "스캔 중 오류 발생";
+  }
+
+  requestAnimationFrame(scanLoop);
+}

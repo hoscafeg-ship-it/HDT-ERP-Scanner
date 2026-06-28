@@ -1,61 +1,28 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>HDT ERP Scanner - Camera Test</title>
+  <title>스캔고 카메라 테스트</title>
   <link rel="stylesheet" href="./css/camera-test.css" />
 </head>
 <body>
-  <div class="container">
-    <h1>📷 HDT ERP Scanner</h1>
+  <main class="app">
+    <h1>스캔고 V4 Quick</h1>
 
-    <button id="startBtn">카메라 시작</button>
+    <button id="startBtn" type="button">카메라 시작</button>
 
-    <video id="camera" autoplay playsinline muted></video>
+    <p id="status">대기 중</p>
+    <p id="result">스캔 결과: 없음</p>
 
-    <div id="result">카메라 시작 버튼을 눌러주세요.</div>
-  </div>
+    <div class="camera-box">
+      <video id="video" playsinline muted></video>
+      <div class="scan-box"></div>
+    </div>
 
-  <script>
-    const video = document.querySelector("#camera");
-    const resultBox = document.querySelector("#result");
-    const startBtn = document.querySelector("#startBtn");
+    <canvas id="canvas"></canvas>
+  </main>
 
-    function log(msg) {
-      console.log(msg);
-      resultBox.textContent = msg;
-      alert(msg);
-    }
-
-    startBtn.onclick = async function () {
-      log("버튼 클릭됨!");
-
-      try {
-        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-          log("카메라 API 없음. HTTPS 주소에서 접속해야 합니다.");
-          return;
-        }
-
-        log("카메라 권한 요청 중...");
-
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: {
-            facingMode: "environment"
-          },
-          audio: false
-        });
-
-        video.srcObject = stream;
-        await video.play();
-
-        log("카메라 실행 성공!");
-
-      } catch (err) {
-        console.error(err);
-        log("카메라 실행 실패: " + err.message);
-      }
-    };
-  </script>
+  <script type="module" src="./js/camera-test.js"></script>
 </body>
 </html>
