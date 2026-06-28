@@ -1,22 +1,24 @@
-import { scanImageData } from "@undecaf/zbar-wasm";
-
 const video = document.querySelector("#camera");
 const resultBox = document.querySelector("#result");
+const startBtn = document.querySelector("#startBtn");
 
-const canvas = document.createElement("canvas");
-const ctx = canvas.getContext("2d", { willReadFrequently: true });
+function log(msg) {
+  console.log(msg);
+  resultBox.textContent = msg;
+}
 
-let scanning = false;
-let lastValue = "";
-let lastScanTime = 0;``
+startBtn.addEventListener("click", async () => {
+  log("버튼 클릭됨! 카메라 권한 요청 중...");
 
-async function startCamera() {
   try {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      log("카메라 API 없음. HTTPS 주소에서 접속해야 합니다.");
+      return;
+    }
+
     const stream = await navigator.mediaDevices.getUserMedia({
       video: {
-        facingMode: "environment",
-        width: { ideal: 1280 },
-        height: { ideal: 720 }
+        facingMode: "environment"
       },
       audio: false
     });
@@ -24,65 +26,10 @@ async function startCamera() {
     video.srcObject = stream;
     await video.play();
 
-    resultBox.textContent = "카메라 실행 완료! 바코드를 비춰주세요.";
-    scanLoop();
+    log("카메라 실행 성공!");
 
   } catch (err) {
     console.error(err);
-    resultBox.textContent = "카메라 실행 실패: " + err.message;
+    log("카메라 실행 실패: " + err.message);
   }
-}
-
-async function scanLoop() {
-  if (!video.videoWidth || !video.videoHeight) {
-    requestAnimationFrame(scanLoop);
-    return;
-  }
-
-  if (!scanning) {
-    scanning = true;
-
-    try {
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      const symbols = await scanImageData(imageData);
-
-      if (symbols.length > 0) {
-        const symbol = symbols[0];
-        const value = symbol.decode();
-
-        const now = Date.now();
-
-        if (value && (value !== lastValue || now - lastScanTime > 2000)) {
-          lastValue = value;
-          lastScanTime = now;
-
-          resultBox.textContent = `스캔 성공: ${value}`;
-          console.log("스캔 성공:", value, symbol);
-        }
-      }
-
-    } catch (err) {
-      console.error("스캔 오류:", err);
-    }
-
-    scanning = false;
-  }
-
-  requestAnimationFrame(scanLoop);
-}
-
-const startBtn = document.querySelector("#startBtn");
-
-startBtn.addEventListener("click", async () => {
-  resultBox.textContent = "카메라 권한 요청 중...";
-  startBtn.disabled = true;
-
-  await startCamera();
-
-  startBtn.style.display = "none";
 });
