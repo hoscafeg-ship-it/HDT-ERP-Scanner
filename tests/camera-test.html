@@ -1,35 +1,23 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HDT ERP Scanner - Camera Test</title>
-
-    <link rel="stylesheet" href="./css/camera-test.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HDT ERP Scanner - Camera Test</title>
+  <link rel="stylesheet" href="./css/camera-test.css" />
 </head>
-
 <body>
+  <div class="container">
+    <h1>📷 HDT ERP Scanner</h1>
 
-    <div class="container">
+    <button id="startBtn">카메라 시작</button>
 
-        <h1>📷 HDT ERP Scanner</h1>
+    <video id="camera" autoplay playsinline muted></video>
+    <canvas id="canvas" style="display:none;"></canvas>
 
-        <video
-            id="camera"
-            autoplay
-            playsinline
-            muted
-        ></video>
+    <div id="result">카메라 시작 버튼을 눌러주세요.</div>
+  </div>
 
-        <canvas id="canvas" style="display:none;"></canvas>
-
-        <div id="result">
-            카메라 준비중...
-        </div>
-
-    </div>
-
-    <script type="module" src="./js/camera-test.js"></script>
-
+  <script type="module" src="./js/camera-test.js"></script>
 </body>
 </html>

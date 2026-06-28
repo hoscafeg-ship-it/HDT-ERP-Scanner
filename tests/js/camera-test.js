@@ -8,7 +8,7 @@ const ctx = canvas.getContext("2d", { willReadFrequently: true });
 
 let scanning = false;
 let lastValue = "";
-let lastScanTime = 0;
+let lastScanTime = 0;``
 
 async function startCamera() {
   try {
@@ -76,4 +76,13 @@ async function scanLoop() {
   requestAnimationFrame(scanLoop);
 }
 
-startCamera();
+const startBtn = document.querySelector("#startBtn");
+
+startBtn.addEventListener("click", async () => {
+  resultBox.textContent = "카메라 권한 요청 중...";
+  startBtn.disabled = true;
+
+  await startCamera();
+
+  startBtn.style.display = "none";
+});
