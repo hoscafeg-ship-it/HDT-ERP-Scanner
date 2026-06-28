@@ -1,53 +1,79 @@
-const video = document.getElementById("cameraVideo");
-const startBtn = document.getElementById("startBtn");
-const stopBtn = document.getElementById("stopBtn");
+import { scanImageData } from "@undecaf/zbar-wasm";
 
-const statusText = document.getElementById("statusText");
-const resolutionText = document.getElementById("resolutionText");
-const cameraText = document.getElementById("cameraText");
+const video = document.querySelector("#camera");
+const resultBox = document.querySelector("#result");
 
-let cameraStream = null;
+const canvas = document.createElement("canvas");
+const ctx = canvas.getContext("2d", { willReadFrequently: true });
 
-startBtn.addEventListener("click", startCamera);
-stopBtn.addEventListener("click", stopCamera);
+let scanning = false;
+let lastValue = "";
+let lastScanTime = 0;
 
 async function startCamera() {
   try {
-    statusText.textContent = "카메라 준비중...";
-
-    cameraStream = await navigator.mediaDevices.getUserMedia({
+    const stream = await navigator.mediaDevices.getUserMedia({
       video: {
-        facingMode: { ideal: "environment" },
-        width: { ideal: 1920 },
-        height: { ideal: 1080 }
+        facingMode: "environment",
+        width: { ideal: 1280 },
+        height: { ideal: 720 }
       },
       audio: false
     });
 
-    video.srcObject = cameraStream;
+    video.srcObject = stream;
     await video.play();
 
-    const videoTrack = cameraStream.getVideoTracks()[0];
-    const settings = videoTrack.getSettings();
+    resultBox.textContent = "카메라 실행 완료! 바코드를 비춰주세요.";
+    scanLoop();
 
-    statusText.textContent = "카메라 실행중";
-    resolutionText.textContent = `${settings.width || "-"} x ${settings.height || "-"}`;
-    cameraText.textContent = settings.facingMode || videoTrack.label || "카메라";
-
-  } catch (error) {
-    console.error(error);
-    statusText.textContent = "카메라 오류";
-    resolutionText.textContent = "-";
-    cameraText.textContent = error.message;
+  } catch (err) {
+    console.error(err);
+    resultBox.textContent = "카메라 실행 실패: " + err.message;
   }
 }
 
-function stopCamera() {
-  if (!cameraStream) return;
+async function scanLoop() {
+  if (!video.videoWidth || !video.videoHeight) {
+    requestAnimationFrame(scanLoop);
+    return;
+  }
 
-  cameraStream.getTracks().forEach((track) => track.stop());
-  cameraStream = null;
-  video.srcObject = null;
+  if (!scanning) {
+    scanning = true;
 
-  statusText.textContent = "카메라 종료";
+    try {
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const symbols = await scanImageData(imageData);
+
+      if (symbols.length > 0) {
+        const symbol = symbols[0];
+        const value = symbol.decode();
+
+        const now = Date.now();
+
+        if (value && (value !== lastValue || now - lastScanTime > 2000)) {
+          lastValue = value;
+          lastScanTime = now;
+
+          resultBox.textContent = `스캔 성공: ${value}`;
+          console.log("스캔 성공:", value, symbol);
+        }
+      }
+
+    } catch (err) {
+      console.error("스캔 오류:", err);
+    }
+
+    scanning = false;
+  }
+
+  requestAnimationFrame(scanLoop);
 }
+
+startCamera();
