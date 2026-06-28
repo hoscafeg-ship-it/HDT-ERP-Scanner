@@ -1,35 +1,31 @@
 let stream = null;
 
-export async function startCamera(videoElement) {
+export async function startCamera(video) {
 
-    try {
+    if (stream) return stream;
 
-        stream = await navigator.mediaDevices.getUserMedia({
-
-            video: {
-
-                facingMode: "environment",
-
-                width: { ideal: 1920 },
-
-                height: { ideal: 1080 }
-
+    const constraints = {
+        video: {
+            facingMode: {
+                ideal: "environment"
+            },
+            width: {
+                ideal: 1920
+            },
+            height: {
+                ideal: 1080
             }
+        },
+        audio: false
+    };
 
-        });
+    stream = await navigator.mediaDevices.getUserMedia(constraints);
 
-        videoElement.srcObject = stream;
+    video.srcObject = stream;
 
-        await videoElement.play();
+    await video.play();
 
-        console.log("📷 Camera Started");
-
-    } catch (err) {
-
-        console.error(err);
-
-    }
-
+    return stream;
 }
 
 export function stopCamera() {
@@ -39,7 +35,4 @@ export function stopCamera() {
     stream.getTracks().forEach(track => track.stop());
 
     stream = null;
-
-    console.log("📷 Camera Stopped");
-
 }
