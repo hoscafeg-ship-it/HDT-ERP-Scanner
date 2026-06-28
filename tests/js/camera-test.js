@@ -1,5 +1,3 @@
-import { scanImageData, setModuleArgs } from "@undecaf/zbar-wasm";
-
 const startBtn = document.getElementById("startBtn");
 const statusEl = document.getElementById("status");
 const resultEl = document.getElementById("result");
@@ -7,25 +5,19 @@ const video = document.getElementById("video");
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d", { willReadFrequently: true });
 
-let stream = null;
 let scanning = false;
+let zbarReady = false;
+let scanImageData = null;
 let lastValue = "";
-
-// zbar.wasm 위치 설정
-setModuleArgs({
-  locateFile: (filename) => `/HDT-ERP-Scanner/${filename}`,
-});
 
 startBtn.addEventListener("click", async () => {
   try {
     statusEl.textContent = "카메라 권한 요청 중...";
     startBtn.disabled = true;
 
-    stream = await navigator.mediaDevices.getUserMedia({
+    const stream = await navigator.mediaDevices.getUserMedia({
       video: {
         facingMode: { ideal: "environment" },
-        width: { ideal: 1280 },
-        height: { ideal: 720 },
       },
       audio: false,
     });
@@ -33,19 +25,45 @@ startBtn.addEventListener("click", async () => {
     video.srcObject = stream;
     await video.play();
 
-    statusEl.textContent = "카메라 실행 성공. 바코드를 비춰주세요.";
+    statusEl.textContent = "카메라 실행 성공. 바코드 엔진 준비 중...";
     scanning = true;
 
+    loadZbar();
     requestAnimationFrame(scanLoop);
   } catch (error) {
-    console.error(error);
-    statusEl.textContent = "카메라 실행 실패";
+    console.error("카메라 실행 실패:", error);
+    statusEl.textContent = "카메라 실행 실패: " + error.message;
     startBtn.disabled = false;
   }
 });
 
+async function loadZbar() {
+  try {
+    const zbar = await import("@undecaf/zbar-wasm");
+
+    scanImageData = zbar.scanImageData;
+
+    if (zbar.setModuleArgs) {
+      zbar.setModuleArgs({
+        locateFile: (filename) => `/HDT-ERP-Scanner/${filename}`,
+      });
+    }
+
+    zbarReady = true;
+    statusEl.textContent = "카메라 실행 성공. 바코드를 비춰주세요.";
+  } catch (error) {
+    console.error("zbar 로딩 실패:", error);
+    statusEl.textContent = "카메라는 켜졌지만 바코드 엔진 로딩 실패";
+  }
+}
+
 async function scanLoop() {
   if (!scanning) return;
+
+  if (!zbarReady || !scanImageData) {
+    requestAnimationFrame(scanLoop);
+    return;
+  }
 
   try {
     if (video.readyState >= 2) {
@@ -70,7 +88,6 @@ async function scanLoop() {
     }
   } catch (error) {
     console.error("스캔 오류:", error);
-    statusEl.textContent = "스캔 중 오류 발생";
   }
 
   requestAnimationFrame(scanLoop);
