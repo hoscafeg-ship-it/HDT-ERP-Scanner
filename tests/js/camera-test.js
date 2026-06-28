@@ -1,4 +1,4 @@
-console.log("camera-test.js 로드됨");
+console.log("V4-IMAGEDATA-TEST-001 로드됨");
 
 const startBtn = document.getElementById("startBtn");
 const statusEl = document.getElementById("status");
@@ -7,46 +7,31 @@ const video = document.getElementById("video");
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d", { willReadFrequently: true });
 
-let copyTimer = null;
-let count = 0;
+statusEl.textContent = "JS 로드 성공: V4-IMAGEDATA-TEST-001";
+resultEl.textContent = "버튼을 눌러 ImageData 테스트를 시작하세요.";
 
-if (!startBtn) {
-  console.error("startBtn을 찾지 못함. HTML id 확인 필요");
-} else {
-  startBtn.addEventListener("click", async () => {
-    try {
-      statusEl.textContent = "카메라 권한 요청 중...";
+let timer = null;
 
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: {
-          facingMode: { ideal: "environment" },
-        },
-        audio: false,
-      });
+startBtn.addEventListener("click", async () => {
+  try {
+    statusEl.textContent = "카메라 권한 요청 중...";
 
-      video.srcObject = stream;
-      await video.play();
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: { ideal: "environment" } },
+      audio: false,
+    });
 
-      statusEl.textContent = "카메라 실행 성공";
-      resultEl.textContent = "ImageData 테스트 시작됨";
+    video.srcObject = stream;
+    await video.play();
 
-      startImageDataTest();
-    } catch (error) {
-      console.error("카메라 실행 실패:", error);
-      statusEl.textContent = "카메라 실행 실패: " + error.message;
-    }
-  });
-}
+    statusEl.textContent = "카메라 실행 성공";
+    resultEl.textContent = "1초마다 ImageData 확인 중...";
 
-function startImageDataTest() {
-  if (copyTimer) return;
+    if (timer) return;
 
-  copyTimer = setInterval(() => {
-    try {
-      count++;
-
+    timer = setInterval(() => {
       if (video.readyState < 2) {
-        resultEl.textContent = `대기 중... video.readyState: ${video.readyState}`;
+        resultEl.textContent = "비디오 준비 대기 중...";
         return;
       }
 
@@ -57,13 +42,12 @@ function startImageDataTest() {
 
       const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
-      statusEl.textContent = "ImageData 확인 성공";
       resultEl.textContent =
-        `ImageData 성공 ${count}회: ${imageData.width} x ${imageData.height} / data: ${imageData.data.length}`;
-    } catch (error) {
-      console.error("ImageData 오류:", error);
-      statusEl.textContent = "ImageData 오류 발생";
-      resultEl.textContent = error.message;
-    }
-  }, 1000);
-}
+        `ImageData 성공: ${imageData.width} x ${imageData.height} / ${imageData.data.length}`;
+    }, 1000);
+  } catch (error) {
+    console.error(error);
+    statusEl.textContent = "오류 발생";
+    resultEl.textContent = error.message;
+  }
+});
